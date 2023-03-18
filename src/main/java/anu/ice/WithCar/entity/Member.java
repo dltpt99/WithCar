@@ -7,7 +7,9 @@ import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.management.relation.Role;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -17,16 +19,17 @@ import java.time.LocalDateTime;
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id_number;
+    Long idNumber;
     String userId;
     String pw;
     String nick;
     String email;
     String phoneNumber;
+    Role role;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    LocalDateTime sign_date;
+    LocalDateTime signDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    LocalDate last_pw_changed_date;
+    LocalDate lastPwChangedDate;
 
     public Member(SignupForm form) {
         userId = form.getId();
@@ -34,7 +37,10 @@ public class Member {
         nick = form.getNick();
         email = form.getEmail();
         phoneNumber = form.getPhone_number();
-        sign_date = LocalDateTime.now();
+        signDate = LocalDateTime.now();
+        lastPwChangedDate = LocalDate.now();
     }
+
+
 
 }

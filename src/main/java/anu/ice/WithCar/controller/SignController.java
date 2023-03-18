@@ -4,6 +4,7 @@ import anu.ice.WithCar.entity.SignupForm;
 import anu.ice.WithCar.service.SignService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,10 +19,6 @@ public class SignController {
 
     @PostMapping("/signup")
     public String signupController(SignupForm form) {
-        form.setPw(
-                new BCryptPasswordEncoder().encode(form.getPw())
-        );
-
         signService.signup_service(form);
         return "success";
     }

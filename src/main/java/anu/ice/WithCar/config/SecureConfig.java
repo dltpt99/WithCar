@@ -19,9 +19,16 @@ public class SecureConfig {
                 )
                 .formLogin((form) -> form
                         .loginPage("/login").permitAll()
+                        .loginProcessingUrl("/login-process")
+                        .defaultSuccessUrl("/")
+                        .usernameParameter("userId")
+                        .passwordParameter("pw")
+
 
                 );
-        http.cors(AbstractHttpConfigurer::disable);
+        http
+                .cors(AbstractHttpConfigurer::disable)
+                .csrf().disable();
 
 
         return http.build();
