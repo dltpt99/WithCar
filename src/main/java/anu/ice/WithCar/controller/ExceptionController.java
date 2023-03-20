@@ -1,5 +1,6 @@
 package anu.ice.WithCar.controller;
 
+import anu.ice.WithCar.exception.CarfullRecruitNotFoundException;
 import anu.ice.WithCar.exception.NickDuplicateException;
 import anu.ice.WithCar.exception.UserIdDuplicateException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,5 +17,10 @@ public class ExceptionController {
     @ExceptionHandler(value = UserIdDuplicateException.class)
     public String userIdDuplicateError() {
         return "userIdDuplicateError";
+    }
+
+    @ExceptionHandler(value = CarfullRecruitNotFoundException.class)
+    public String carfullRecruitNotfoundError() {
+        return "carfullRecruitNotfoundError";
     }
 }
