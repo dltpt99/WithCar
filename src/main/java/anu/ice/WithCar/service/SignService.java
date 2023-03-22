@@ -29,23 +29,23 @@ public class SignService implements UserDetailsService {
                 new BCryptPasswordEncoder().encode(form.getPw()
                 ));
         //중복 id, nick 검사
-        check_duplicate_user_id(form);
-        check_duplicate_nick(form);
+        check_duplicate_user_id(form.getId());
+        check_duplicate_nick(form.getNick());
 
         Member member = new Member(form);
         memberRepository.save(member);
 
     }
 
-    private void check_duplicate_user_id(SignupForm form) {
-        Optional<Member> member = memberRepository.findByUserId(form.getId());
+    public void check_duplicate_user_id(String user_id) {
+        Optional<Member> member = memberRepository.findByUserId(user_id);
         if (member.isPresent()) {
             throw new UserIdDuplicateException();
         }
     }
 
-    private void check_duplicate_nick(SignupForm form) {
-        Optional<Member> member = memberRepository.findByNick(form.getId());
+    public void check_duplicate_nick(String nick) {
+        Optional<Member> member = memberRepository.findByNick(nick);
         if (member.isPresent()) {
             throw new NickDuplicateException();
         }
