@@ -24,13 +24,14 @@ public class RecruitCarfull{
     private String endPoint;
     private String comment;
     private int view;
+    private boolean isDeleted;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime recruitWriteTime;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime startTime;
 
-    public RecruitCarfull(Member member, writeRecruitCarfullForm form) {
+    public RecruitCarfull(Member member, WriteRecruitCarfullForm form) {
         this.writeMemberID = member.getIdNumber();
         this.boardTitle = form.getBoardTitle();
         this.fee = form.getFee();
@@ -38,5 +39,6 @@ public class RecruitCarfull{
         this.endPoint = form.getEndPoint();
         this.comment = form.getComment();
         this.startTime = form.getStartTime();
+        this.isDeleted = false;
     }
 }

@@ -8,6 +8,7 @@ public class SignupForm {
     String pw;
     String pw_check;
     String nick;
+    String gender;
     String email;
     String phone_number;
 }

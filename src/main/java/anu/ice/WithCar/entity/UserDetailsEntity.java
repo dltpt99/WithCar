@@ -1,13 +1,11 @@
 package anu.ice.WithCar.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.management.relation.Role;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -19,8 +17,7 @@ public class UserDetailsEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Role role = member.getRole();
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.toString());
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(member.getRole());
         Collection<GrantedAuthority> authorities = new ArrayList<>(); //List인 이유 : 여러개의 권한을 가질 수 있다
         authorities.add(authority);
 

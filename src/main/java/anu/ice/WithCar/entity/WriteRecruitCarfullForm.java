@@ -6,7 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 
 @Data
-public class writeRecruitCarfullForm {
+public class WriteRecruitCarfullForm {
     private String boardTitle;
     private int fee;
     private String startPoint;

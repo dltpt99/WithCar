@@ -10,7 +10,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class SecureConfig {
+public class SecureConfig{
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -23,13 +23,9 @@ public class SecureConfig {
                         .defaultSuccessUrl("/")
                         .usernameParameter("userId")
                         .passwordParameter("pw")
-
-
-                );
-        http
+                )
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf().disable();
-
 
         return http.build();
     }

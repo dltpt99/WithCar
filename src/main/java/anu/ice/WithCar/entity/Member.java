@@ -7,9 +7,7 @@ import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.management.relation.Role;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -25,7 +23,8 @@ public class Member {
     String nick;
     String email;
     String phoneNumber;
-    Role role;
+    String gender;
+    String role;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime signDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -39,6 +38,7 @@ public class Member {
         phoneNumber = form.getPhone_number();
         signDate = LocalDateTime.now();
         lastPwChangedDate = LocalDate.now();
+        role = "user";
     }
 
 
