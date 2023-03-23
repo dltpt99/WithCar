@@ -38,7 +38,7 @@ public class Member {
         phoneNumber = form.getPhone_number();
         signDate = LocalDateTime.now();
         lastPwChangedDate = LocalDate.now();
-        role = "user";
+        role = "ROLE_USER";
     }
 
 
