@@ -1,11 +1,9 @@
 package anu.ice.WithCar.service;
 
-import anu.ice.WithCar.entity.EditRecruitCarfullForm;
-import anu.ice.WithCar.entity.Member;
-import anu.ice.WithCar.entity.RecruitCarfull;
-import anu.ice.WithCar.entity.WriteRecruitCarfullForm;
+import anu.ice.WithCar.entity.*;
 import anu.ice.WithCar.exception.CarfullRecruitDeletedException;
 import anu.ice.WithCar.exception.CarfullRecruitNotFoundException;
+import anu.ice.WithCar.repository.ApplyCarfullRecruitRepository;
 import anu.ice.WithCar.repository.CarfullRecruitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,10 +13,13 @@ import java.util.List;
 @Service
 public class CarfullRecruitService {
     private final CarfullRecruitRepository carfullRecruitRepository;
+    private final ApplyCarfullRecruitRepository applyCarfullRecruitRepository;
+
 
     @Autowired
-    public CarfullRecruitService(CarfullRecruitRepository carfullRecruitRepository) {
+    public CarfullRecruitService(CarfullRecruitRepository carfullRecruitRepository, ApplyCarfullRecruitRepository applyCarfullRecruitRepository) {
         this.carfullRecruitRepository = carfullRecruitRepository;
+        this.applyCarfullRecruitRepository = applyCarfullRecruitRepository;
     }
 
     public RecruitCarfull writeCarfullRecruit(Member member, WriteRecruitCarfullForm form) {
@@ -60,7 +61,15 @@ public class CarfullRecruitService {
         return recruitCarfull;
     }
 
-    public void increaseViewCarFull(RecruitCarfull recruitCarfull) {
+    public RecruitCarfull applyCarfullRecruit(long no, Member member) {
+        RecruitCarfull recruitCarfull =  carfullRecruitRepository.findById(no).orElseThrow(CarfullRecruitNotFoundException::new);
+        if(recruitCarfull.isDeleted()) throw new CarfullRecruitDeletedException();
+
+        ApplyRaecruitCarfull apply = new ApplyRaecruitCarfull(recruitCarfull, member);
+        applyCarfullRecruitRepository.save(apply);
+        return recruitCarfull;
+    }
+    private void increaseViewCarFull(RecruitCarfull recruitCarfull) {
         recruitCarfull.setView(
                 recruitCarfull.getView() + 1
         );

@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class WriteRecruitCarfullForm {
     private String boardTitle;
     private int fee;
+    private short personLimit;
     private String startPoint;
     private String endPoint;
     private String comment;

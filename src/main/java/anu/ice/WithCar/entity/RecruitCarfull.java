@@ -1,9 +1,6 @@
 package anu.ice.WithCar.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,9 +14,12 @@ public class RecruitCarfull{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long recruitCarfullID;
-    private long writeMemberID;
+    @ManyToOne
+    @JoinColumn(name = "writeMemberID")
+    private Member writeMember;
     private String boardTitle;
     private int fee;
+    private short personLimit;
     private String startPoint;
     private String endPoint;
     private String comment;
@@ -28,17 +28,19 @@ public class RecruitCarfull{
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime recruitWriteTime;
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     LocalDateTime startTime;
 
     public RecruitCarfull(Member member, WriteRecruitCarfullForm form) {
-        this.writeMemberID = member.getIdNumber();
+        this.writeMember = member;
         this.boardTitle = form.getBoardTitle();
         this.fee = form.getFee();
+        this.personLimit = form.getPersonLimit();
         this.startPoint = form.getStartPoint();
         this.endPoint = form.getEndPoint();
         this.comment = form.getComment();
         this.startTime = form.getStartTime();
         this.isDeleted = false;
     }
+
 }

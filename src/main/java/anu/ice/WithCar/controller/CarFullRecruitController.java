@@ -32,7 +32,15 @@ public class CarFullRecruitController {
     @GetMapping("/recruit/new")
     public RecruitCarfull writeRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
                                               WriteRecruitCarfullForm form) {
+        if(member == null) throw new NotLoginException();
+
         return carfullRecruitService.writeCarfullRecruit(member.getMember(), form);
+    }
+
+    @PostMapping("/recruit/apply/{no}")
+    public RecruitCarfull applyRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
+                                              @PathVariable("no") long no) {
+        return carfullRecruitService.applyCarfullRecruit(no, member.getMember());
     }
 
     @GetMapping("/recruit/{no}")
