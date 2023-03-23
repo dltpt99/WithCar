@@ -1,5 +1,6 @@
 package anu.ice.WithCar.config;
 
+import anu.ice.WithCar.security.LoginSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,7 +21,8 @@ public class SecureConfig{
                 .formLogin((form) -> form
                         .loginPage("/login").permitAll()
                         .loginProcessingUrl("/login-process")
-                        .defaultSuccessUrl("/")
+                        .failureUrl("/login")
+                        .successHandler(new LoginSuccessHandler())
                         .usernameParameter("userId")
                         .passwordParameter("pw")
                 )
