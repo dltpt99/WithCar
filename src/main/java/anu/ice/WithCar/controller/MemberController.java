@@ -2,8 +2,9 @@ package anu.ice.WithCar.controller;
 
 import anu.ice.WithCar.entity.Member;
 import anu.ice.WithCar.entity.UserDetailsEntity;
+import anu.ice.WithCar.exception.NotLoginException;
 import anu.ice.WithCar.service.MemberService;
-import com.google.gson.Gson;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,10 +24,10 @@ public class MemberController {
     @GetMapping("/myInfo")
     public String showMyInfo(@AuthenticationPrincipal UserDetailsEntity member) {
         if (member == null) {
-            return "redirect:/login";
+            throw new NotLoginException();
         }
 
-        return new Gson().toJson(member.getMember());
+        return new JSONObject(member.getMember()).toString();
     }
 
     @GetMapping("/admin/memberList")
