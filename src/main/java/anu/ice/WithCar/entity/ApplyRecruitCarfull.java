@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @NoArgsConstructor
-public class ApplyRaecruitCarfull {
+public class ApplyRecruitCarfull {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long ApplyId;
     @ManyToOne
-    @JoinColumn(name = "RecruitCarfullId")
+    @JoinColumn(name = "RecruitCarefulId")
     private RecruitCarfull recruitCarfull;
     @ManyToOne
     @JoinColumn(name = "applicantId")
@@ -24,7 +24,7 @@ public class ApplyRaecruitCarfull {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime applyTime;
 
-    public ApplyRaecruitCarfull(RecruitCarfull recruitCarfullId, Member applicantId) {
+    public ApplyRecruitCarfull(RecruitCarfull recruitCarfullId, Member applicantId) {
         this.recruitCarfull = recruitCarfullId;
         this.applicant = applicantId;
         applyTime = LocalDateTime.now();

@@ -65,7 +65,7 @@ public class CarfullRecruitService {
         RecruitCarfull recruitCarfull =  carfullRecruitRepository.findById(no).orElseThrow(CarfullRecruitNotFoundException::new);
         if(recruitCarfull.isDeleted()) throw new CarfullRecruitDeletedException();
 
-        ApplyRaecruitCarfull apply = new ApplyRaecruitCarfull(recruitCarfull, member);
+        ApplyRecruitCarfull apply = new ApplyRecruitCarfull(recruitCarfull, member);
         applyCarfullRecruitRepository.save(apply);
         return recruitCarfull;
     }
