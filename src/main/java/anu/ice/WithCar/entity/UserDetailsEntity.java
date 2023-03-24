@@ -1,6 +1,5 @@
 package anu.ice.WithCar.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,10 +9,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 
-@AllArgsConstructor
 @Getter
 public class UserDetailsEntity implements UserDetails {
     private final Member member;
+
+    public UserDetailsEntity(Member member) {
+        this.member = member;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,9 +1,6 @@
 package anu.ice.WithCar.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,8 +15,10 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long idNumber;
+    @Column(unique = true)
     String userId;
     String pw;
+    @Column(unique = true)
     String nick;
     String email;
     String phoneNumber;
@@ -29,6 +28,8 @@ public class Member {
     LocalDateTime signDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     LocalDate lastPwChangedDate;
+    @Transient
+    private String refreshToken;
 
     public Member(SignupForm form) {
         userId = form.getId();
@@ -40,7 +41,4 @@ public class Member {
         lastPwChangedDate = LocalDate.now();
         role = "ROLE_USER";
     }
-
-
-
 }
