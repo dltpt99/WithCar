@@ -38,3 +38,6 @@ out/
 
 ### application.properties for DB important information ###
 !**/src/main/resources/application.properties
+
+### exclude test html ###
+.login-test.html

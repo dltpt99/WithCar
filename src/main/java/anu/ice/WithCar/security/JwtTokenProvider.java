@@ -27,6 +27,10 @@ public class JwtTokenProvider {
     private Key secretKey;
     private final SignService userDetailsService;
 
+    // 1시간
+//    private final long TOKEN_VALID_MILISECOND = 1000L * 60 * 60;
+    private final long TOKEN_VALID_MILISECOND = 1;
+
     public JwtTokenProvider(@Lazy SignService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
@@ -41,8 +45,6 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims().setSubject(userId);
         claims.put("roles", role);
         Date now = new Date();
-        // 10시간
-        long TOKEN_VALID_MILISECOND = 1000L * 60 * 60 * 10;
         return Jwts.builder()
                 .setClaims(claims) //데이터
                 .setIssuedAt(now)  //토큰 발행일
