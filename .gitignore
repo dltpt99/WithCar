@@ -40,4 +40,4 @@ out/
 !**/src/main/resources/application.properties
 
 ### exclude test html ###
-.login-test.html
+login-test.html
