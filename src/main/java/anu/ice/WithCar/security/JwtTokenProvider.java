@@ -1,13 +1,12 @@
 package anu.ice.WithCar.security;
 
 import anu.ice.WithCar.service.SignService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +19,7 @@ import java.security.Key;
 import java.util.Date;
 
 @Component
+@Slf4j
 public class JwtTokenProvider {
 
     @Value("${spring.jwt.secret}")
@@ -27,9 +27,7 @@ public class JwtTokenProvider {
     private Key secretKey;
     private final SignService userDetailsService;
 
-    // 1시간
-//    private final long TOKEN_VALID_MILISECOND = 1000L * 60 * 60;
-    private final long TOKEN_VALID_MILISECOND = 1;
+    //    private final long TOKEN_VALID_MILISECOND = 1;
 
     public JwtTokenProvider(@Lazy SignService userDetailsService) {
         this.userDetailsService = userDetailsService;
@@ -45,6 +43,8 @@ public class JwtTokenProvider {
         Claims claims = Jwts.claims().setSubject(userId);
         claims.put("roles", role);
         Date now = new Date();
+        // 1시간
+        long TOKEN_VALID_MILISECOND = 1000L * 60 * 60;
         return Jwts.builder()
                 .setClaims(claims) //데이터
                 .setIssuedAt(now)  //토큰 발행일
@@ -79,8 +79,19 @@ public class JwtTokenProvider {
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build()
                     .parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
+        }catch (SignatureException e) {
+            log.error("Invalid signature: {}", e.getMessage());
+        } catch (MalformedJwtException e) {
+            log.error("Invalid token: {}", e.getMessage());
+        } catch (ExpiredJwtException e) {
+            log.error("token is expired: {}", e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            log.error("token is unsupported: {}", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            log.error("claims string is empty: {}", e.getMessage());
         } catch (Exception e) {
             return false;
         }
+        return false;
     }
 }

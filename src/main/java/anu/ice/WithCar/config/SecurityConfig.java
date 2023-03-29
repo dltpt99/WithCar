@@ -40,11 +40,13 @@ public class SecurityConfig {
                                                // Cors 허용 패턴
                                                CorsConfiguration config = new CorsConfiguration();
                                                config.setAllowedOrigins(
-                                                       List.of("*")
+                                                       List.of("http://anu330.iptime.org:3000", "http://anu330.iptime.org:8080")
                                                );
                                                config.setAllowedMethods(
                                                        List.of("*")
                                                );
+                                               config.setAllowCredentials(true);
+//                                               config.setAllowedOriginPatterns(*);
                                                return config;
                                            };
                                            c.configurationSource(source);
@@ -56,7 +58,7 @@ public class SecurityConfig {
                 // 회원가입과 로그인은 모두 승인
                 .requestMatchers("/", "/signup/**", "/login-process", "/login").permitAll()
                 // /admin으로 시작하는 요청은 ADMIN 권한이 있는 유저에게만 허용
-                .requestMatchers("/admin/**").hasRole("ROLE_ADMIN")
+                .requestMatchers("/admin/**").hasRole("ADMIN")
                 // /user 로 시작하는 요청은 USER 권한이 있는 유저에게만 허용
                 .anyRequest().denyAll()
                 .and()
@@ -69,7 +71,7 @@ public class SecurityConfig {
                     response.setStatus(403);
                     response.setCharacterEncoding("utf-8");
                     response.setContentType("text/html; charset=UTF-8");
-                    response.getWriter().write("권한이 없는 사용자입니다. SecurityConfig");
+                    response.getWriter().write("권한이 없는 사용자입니다. SecurityConfig \n");
                 })
                 .authenticationEntryPoint((request, response, authException) -> {
                     // 인증문제가 발생했을 때 이 부분을 호출한다.
