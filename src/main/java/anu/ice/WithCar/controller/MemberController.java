@@ -1,8 +1,11 @@
 package anu.ice.WithCar.controller;
 
 import anu.ice.WithCar.entity.Member;
+import anu.ice.WithCar.entity.UserDetailsEntity;
 import anu.ice.WithCar.service.MemberService;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,9 +21,9 @@ public class MemberController {
     }
 
     @GetMapping("/myInfo")
-    public String showMyInfo() {
+    public String showMyInfo(@AuthenticationPrincipal UserDetailsEntity member) {
 
-        return null;
+        return new JSONObject(member.getMember()).toString();
     }
 
     @GetMapping("/admin/memberList")

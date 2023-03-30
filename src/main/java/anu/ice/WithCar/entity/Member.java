@@ -41,4 +41,6 @@ public class Member {
         lastPwChangedDate = LocalDate.now();
         role = "ROLE_USER";
     }
+
+
 }

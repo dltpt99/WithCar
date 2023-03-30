@@ -54,14 +54,17 @@ public class SecurityConfig {
                                )
                 // Spring Security 세션 정책 : 세션을 생성 및 사용하지 않음
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().authorizeHttpRequests()
-                // 회원가입과 로그인은 모두 승인
-                .requestMatchers("/", "/signup/**", "/login-process", "/login").permitAll()
-                // /admin으로 시작하는 요청은 ADMIN 권한이 있는 유저에게만 허용
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                // /user 로 시작하는 요청은 USER 권한이 있는 유저에게만 허용
-                .anyRequest().denyAll()
                 .and()
+                .authorizeHttpRequests(auth -> auth
+                        // 회원가입과 로그인은 모두 승인
+                        // /admin으로 시작하는 요청은 ADMIN 권한이 있는 유저에게만 허용
+                        // /user 로 시작하는 요청은 USER 권한이 있는 유저에게만 허용
+                        .requestMatchers("/", "/signup/**", "/login-process", "/login", "/recruit/**").permitAll()
+                        .requestMatchers("/recruit/new", "/recruit/edit", "/recruit/delete/**", "/recruit/apply/**",
+                                "/myInfo").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest().denyAll()
+                )
                 // JWT 인증 필터 적용
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 // 에러 핸들링

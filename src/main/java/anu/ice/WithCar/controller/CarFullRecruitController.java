@@ -55,7 +55,6 @@ public class CarFullRecruitController {
 
         return carfullRecruitService.editCarfullRecruit(form);
     }
-
     @PostMapping("/recruit/delete/{no}")
     public String deleteRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
                                        @PathVariable("no") long no) {
