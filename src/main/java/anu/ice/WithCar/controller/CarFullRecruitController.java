@@ -29,7 +29,7 @@ public class CarFullRecruitController {
         return carfullRecruitService.viewCarfullRecruitPage();
     }
 
-    @GetMapping("/recruit/new")
+    @PostMapping("/recruit/new")
     public RecruitCarfull writeRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
                                               WriteRecruitCarfullForm form) {
         if(member == null) throw new NotLoginException();
