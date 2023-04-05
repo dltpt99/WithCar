@@ -20,11 +20,12 @@ public class RecruitCarfull{
     private String boardTitle;
     private int fee;
     private short personLimit;
+    private short applyPersonCount;
     private String startPoint;
     private String endPoint;
     private String comment;
     private int view;
-    private boolean isDeleted;
+    private boolean deleted;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime recruitWriteTime;
@@ -40,7 +41,17 @@ public class RecruitCarfull{
         this.endPoint = form.getEndPoint();
         this.comment = form.getComment();
         this.startTime = form.getStartTime();
-        this.isDeleted = false;
+        this.recruitWriteTime = LocalDateTime.now();
+        this.applyPersonCount = 0;
+        this.deleted = false;
+    }
+
+    public void applyCountUp() {
+        this.applyPersonCount++;
+    }
+
+    public void applyCountDown() {
+        this.applyPersonCount--;
     }
 
 }

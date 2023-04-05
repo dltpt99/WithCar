@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CarfullRecruitService {
@@ -51,7 +52,7 @@ public class CarfullRecruitService {
 
     public List<RecruitCarfull> viewCarfullRecruitPage() {
         // 추후 페이징 기능 추가
-        return carfullRecruitRepository.findAllByDeletedIsFalse();
+        return carfullRecruitRepository.findAllByDeletedFalse();
     }
 
     public RecruitCarfull viewCarfullRecruit(long no) {
@@ -67,9 +68,32 @@ public class CarfullRecruitService {
         if(recruitCarfull.isDeleted()) throw new CarfullRecruitDeletedException();
 
         ApplyRecruitCarfull apply = new ApplyRecruitCarfull(recruitCarfull, member);
+        recruitCarfull.applyCountUp();
+        carfullRecruitRepository.save(recruitCarfull);
         applyCarfullRecruitRepository.save(apply);
         return recruitCarfull;
     }
+
+    public RecruitCarfull cancelApplyCarfullRecruit(long no, Member member) {
+        RecruitCarfull recruitCarfull = carfullRecruitRepository.findById(no).orElseThrow(CarfullRecruitNotFoundException::new);
+        if(recruitCarfull.isDeleted()) throw new CarfullRecruitDeletedException();
+
+        ApplyRecruitCarfull applyRecruitCarfull = applyCarfullRecruitRepository.findAllByRecruitCarfullAndApplicantAndCancelledFalse(recruitCarfull, member)
+                .orElseThrow(CarfullRecruitNotFoundException::new);
+
+        applyRecruitCarfull.setCancelled(true);
+        recruitCarfull.applyCountDown();
+
+        carfullRecruitRepository.save(recruitCarfull);
+        applyCarfullRecruitRepository.save(applyRecruitCarfull);
+
+        return recruitCarfull;
+    }
+
+    public boolean checkCarfullRecruitOwner(Member member, long no) {
+        return Objects.equals(carfullRecruitRepository.findById(no).orElseThrow(CarfullRecruitNotFoundException::new).getWriteMember().getIdNumber(), member.getIdNumber());
+    }
+
     private void increaseViewCarFull(RecruitCarfull recruitCarfull) {
         recruitCarfull.setView(
                 recruitCarfull.getView() + 1

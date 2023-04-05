@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface CarfullRecruitRepository extends JpaRepository<RecruitCarfull, Long> {
-    List<RecruitCarfull> findAllByDeletedIsFalse();
+    List<RecruitCarfull> findAllByDeletedFalse();
+
 }

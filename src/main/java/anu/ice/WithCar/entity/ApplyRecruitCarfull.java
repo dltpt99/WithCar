@@ -20,7 +20,7 @@ public class ApplyRecruitCarfull {
     @ManyToOne
     @JoinColumn(name = "applicantId")
     private Member applicant;
-    private boolean isCancelled;
+    private boolean cancelled;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime applyTime;
 
@@ -28,6 +28,6 @@ public class ApplyRecruitCarfull {
         this.recruitCarfull = recruitCarfullId;
         this.applicant = applicantId;
         applyTime = LocalDateTime.now();
-        this.isCancelled = false;
+        this.cancelled = false;
     }
 }

@@ -8,10 +8,7 @@ import anu.ice.WithCar.exception.NotLoginException;
 import anu.ice.WithCar.service.CarfullRecruitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -43,6 +40,12 @@ public class CarFullRecruitController {
         return carfullRecruitService.applyCarfullRecruit(no, member.getMember());
     }
 
+    @PostMapping("/recruit/apply/cancel/{no}")
+    public RecruitCarfull applyCancelRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
+                                                    @PathVariable("no") long no) {
+        return carfullRecruitService.cancelApplyCarfullRecruit(no, member.getMember());
+    }
+
     @GetMapping("/recruit/{no}")
     public RecruitCarfull viewRecruitCarfull(@PathVariable("no") long no) {
         return carfullRecruitService.viewCarfullRecruit(no);
@@ -63,6 +66,14 @@ public class CarFullRecruitController {
         carfullRecruitService.deleteCarfullRecruit(no);
 
         return "0";
+    }
+
+    @GetMapping("/recruit/isowner")
+    public String checkCarfullRecruitOwner(@AuthenticationPrincipal UserDetailsEntity member,
+                                           @RequestParam("recruit_ID") long no) {
+        return String.valueOf(
+                carfullRecruitService.checkCarfullRecruitOwner(member.getMember(), no)
+        );
     }
 
 }

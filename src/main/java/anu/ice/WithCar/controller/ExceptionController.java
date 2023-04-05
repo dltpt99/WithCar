@@ -1,9 +1,6 @@
 package anu.ice.WithCar.controller;
 
-import anu.ice.WithCar.exception.CarfullRecruitNotFoundException;
-import anu.ice.WithCar.exception.NickDuplicateException;
-import anu.ice.WithCar.exception.NotLoginException;
-import anu.ice.WithCar.exception.UserIdDuplicateException;
+import anu.ice.WithCar.exception.*;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -29,13 +26,21 @@ public class ExceptionController {
         return "carfullRecruitNotfoundError";
     }
 
+    // 로그인이 되어있지 않음
     @ExceptionHandler(value = NotLoginException.class)
     public String notLoginError() {
         return "notLoginError";
     }
 
+    // 로그인 시 ID, PW 다름
     @ExceptionHandler(value = BadCredentialsException.class)
     public String badCredentialsException(BadCredentialsException e) {
         return e.getMessage();
     }
+
+    @ExceptionHandler(value = CarfullRecruitApplyLimitedOverException.class)
+    public String carfullRecruitApplyLimitedOverException() { return "carfullRecruitLimitedOver"; }
+
+    @ExceptionHandler(value = CarfullRecruitApplyNotfoundException.class)
+    public String carfullRecruitApplyNotfoundException() { return "carfullRecruitApplyNotfound"; }
 }
