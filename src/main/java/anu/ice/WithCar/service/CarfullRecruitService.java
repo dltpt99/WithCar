@@ -46,11 +46,12 @@ public class CarfullRecruitService {
                 .orElseThrow(CarfullRecruitNotFoundException::new);
         if(recruitCarfull.isDeleted()) throw new CarfullRecruitDeletedException();
         recruitCarfull.setDeleted(true);
+        carfullRecruitRepository.save(recruitCarfull);
     }
 
     public List<RecruitCarfull> viewCarfullRecruitPage() {
         // 추후 페이징 기능 추가
-        return carfullRecruitRepository.findAll();
+        return carfullRecruitRepository.findAllByDeletedIsFalse();
     }
 
     public RecruitCarfull viewCarfullRecruit(long no) {
