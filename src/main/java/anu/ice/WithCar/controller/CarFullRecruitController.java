@@ -1,9 +1,9 @@
 package anu.ice.WithCar.controller;
 
-import anu.ice.WithCar.entity.RecruitCarfull;
-import anu.ice.WithCar.entity.UserDetailsEntity;
-import anu.ice.WithCar.entity.EditRecruitCarfullForm;
-import anu.ice.WithCar.entity.WriteRecruitCarfullForm;
+import anu.ice.WithCar.domain.entity.RecruitCarfull;
+import anu.ice.WithCar.domain.dto.UserDetailsEntity;
+import anu.ice.WithCar.domain.dto.EditRecruitCarfullForm;
+import anu.ice.WithCar.domain.dto.WriteRecruitCarfullForm;
 import anu.ice.WithCar.exception.NotLoginException;
 import anu.ice.WithCar.service.CarfullRecruitService;
 import org.springframework.beans.factory.annotation.Autowired;

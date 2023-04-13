@@ -1,4 +1,4 @@
-package anu.ice.WithCar.entity;
+package anu.ice.WithCar.domain.dto;
 
 import lombok.Data;
 

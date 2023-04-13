@@ -1,5 +1,6 @@
-package anu.ice.WithCar.entity;
+package anu.ice.WithCar.domain.dto;
 
+import anu.ice.WithCar.domain.entity.Member;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

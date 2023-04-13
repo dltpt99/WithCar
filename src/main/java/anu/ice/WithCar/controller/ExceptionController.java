@@ -43,4 +43,7 @@ public class ExceptionController {
 
     @ExceptionHandler(value = CarfullRecruitApplyNotfoundException.class)
     public String carfullRecruitApplyNotfoundException() { return "carfullRecruitApplyNotfound"; }
+
+    @ExceptionHandler(value = MemberNotFoundException.class)
+    public String memberNotFoundException() { return "memberNotFound"; }
 }

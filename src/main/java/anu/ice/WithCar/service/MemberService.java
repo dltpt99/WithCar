@@ -1,6 +1,6 @@
 package anu.ice.WithCar.service;
 
-import anu.ice.WithCar.entity.Member;
+import anu.ice.WithCar.domain.entity.Member;
 import anu.ice.WithCar.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

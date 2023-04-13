@@ -1,7 +1,7 @@
 package anu.ice.WithCar.controller;
 
-import anu.ice.WithCar.entity.Member;
-import anu.ice.WithCar.entity.UserDetailsEntity;
+import anu.ice.WithCar.domain.entity.Member;
+import anu.ice.WithCar.domain.dto.UserDetailsEntity;
 import anu.ice.WithCar.service.MemberService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

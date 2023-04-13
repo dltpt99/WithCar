@@ -71,14 +71,14 @@ public class SecurityConfig {
                 .exceptionHandling()
                 .accessDeniedHandler((request, response, accessDeniedException) -> {
                     // 권한 문제가 발생했을 때 이 부분을 호출한다.
-                    response.setStatus(403);
+                    response.setStatus(200);
                     response.setCharacterEncoding("utf-8");
                     response.setContentType("text/html; charset=UTF-8");
                     response.getWriter().write("권한이 없는 사용자입니다. SecurityConfig \n");
                 })
                 .authenticationEntryPoint((request, response, authException) -> {
                     // 인증문제가 발생했을 때 이 부분을 호출한다.
-                    response.setStatus(401);
+                    response.setStatus(200);
                     response.setCharacterEncoding("utf-8");
                     response.setContentType("text/html; charset=UTF-8");
                     response.getWriter().write("인증되지 않은 사용자입니다.");

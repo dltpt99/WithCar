@@ -1,6 +1,6 @@
 package anu.ice.WithCar.repository;
 
-import anu.ice.WithCar.entity.Token;
+import anu.ice.WithCar.domain.Token;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

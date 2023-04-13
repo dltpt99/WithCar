@@ -1,4 +1,4 @@
-package anu.ice.WithCar.entity;
+package anu.ice.WithCar.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

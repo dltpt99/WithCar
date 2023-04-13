@@ -1,4 +1,4 @@
-package anu.ice.WithCar.entity;
+package anu.ice.WithCar.domain;
 
 import lombok.Builder;
 import lombok.Data;

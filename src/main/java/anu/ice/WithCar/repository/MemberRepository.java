@@ -1,6 +1,6 @@
 package anu.ice.WithCar.repository;
 
-import anu.ice.WithCar.entity.Member;
+import anu.ice.WithCar.domain.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

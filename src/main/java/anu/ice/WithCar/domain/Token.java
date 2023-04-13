@@ -1,4 +1,4 @@
-package anu.ice.WithCar.entity;
+package anu.ice.WithCar.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;

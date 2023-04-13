@@ -1,5 +1,6 @@
-package anu.ice.WithCar.entity;
+package anu.ice.WithCar.domain.entity;
 
+import anu.ice.WithCar.domain.dto.WriteRecruitCarfullForm;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,11 @@
 package anu.ice.WithCar.service;
 
-import anu.ice.WithCar.entity.*;
+import anu.ice.WithCar.domain.*;
+import anu.ice.WithCar.domain.dto.LoginRequest;
+import anu.ice.WithCar.domain.dto.LoginResponse;
+import anu.ice.WithCar.domain.dto.SignupForm;
+import anu.ice.WithCar.domain.dto.UserDetailsEntity;
+import anu.ice.WithCar.domain.entity.Member;
 import anu.ice.WithCar.exception.NickDuplicateException;
 import anu.ice.WithCar.exception.NotLoginException;
 import anu.ice.WithCar.exception.UserIdDuplicateException;

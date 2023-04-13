@@ -1,6 +1,8 @@
 package anu.ice.WithCar.controller;
 
-import anu.ice.WithCar.entity.*;
+import anu.ice.WithCar.domain.dto.LoginRequest;
+import anu.ice.WithCar.domain.dto.LoginResponse;
+import anu.ice.WithCar.domain.dto.SignupForm;
 import anu.ice.WithCar.service.SignService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
