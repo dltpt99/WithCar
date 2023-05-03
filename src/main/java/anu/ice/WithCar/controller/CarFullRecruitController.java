@@ -68,7 +68,7 @@ public class CarFullRecruitController {
         return "0";
     }
 
-    @GetMapping("/recruit/isowner")
+    @PostMapping("/recruit/isowner")
     public String checkCarfullRecruitOwner(@AuthenticationPrincipal UserDetailsEntity member,
                                            @RequestParam("recruit_ID") long no) {
         return String.valueOf(
