@@ -21,6 +21,7 @@ public class ApplyRecruitCarfull {
     @JoinColumn(name = "applicantId")
     private Member applicant;
     private boolean cancelled;
+    private boolean accepted;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime applyTime;
 
@@ -28,6 +29,7 @@ public class ApplyRecruitCarfull {
         this.recruitCarfull = recruitCarfullId;
         this.applicant = applicantId;
         applyTime = LocalDateTime.now();
+        this.accepted = false;
         this.cancelled = false;
     }
 }

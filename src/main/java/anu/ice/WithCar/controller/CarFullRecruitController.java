@@ -58,6 +58,7 @@ public class CarFullRecruitController {
 
         return carfullRecruitService.editCarfullRecruit(form);
     }
+
     @PostMapping("/recruit/delete/{no}")
     public String deleteRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
                                        @PathVariable("no") long no) {
@@ -68,11 +69,32 @@ public class CarFullRecruitController {
         return "0";
     }
 
+    // ApplyCarfullRecruit에 대한 ID를 받음
+    @PostMapping("/recruit/accept/{no}")
+    public String acceptRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
+                                       @PathVariable("no") long no) {
+        if(member == null) throw new NotLoginException();
+
+        return String.valueOf(carfullRecruitService.acceptCarfullRecruitApply(member.getMember(), no));
+    }
+
     @PostMapping("/recruit/isowner")
     public String checkCarfullRecruitOwner(@AuthenticationPrincipal UserDetailsEntity member,
                                            @RequestParam("recruit_ID") long no) {
+        if(member == null) throw new NotLoginException();
+
         return String.valueOf(
                 carfullRecruitService.checkCarfullRecruitOwner(member.getMember(), no)
+        );
+    }
+
+    @PostMapping("/recruit/isApply")
+    public String checkCarfullRecruitApplied(@AuthenticationPrincipal UserDetailsEntity member,
+                                             @RequestParam("recruit_ID") long no) {
+        if(member == null) throw new NotLoginException();
+
+        return String.valueOf(
+                carfullRecruitService.checkCarfullRecruitApplied(member.getMember(), no)
         );
     }
 

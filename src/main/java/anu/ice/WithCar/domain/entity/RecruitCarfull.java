@@ -44,6 +44,7 @@ public class RecruitCarfull{
         this.startTime = form.getStartTime();
         this.recruitWriteTime = LocalDateTime.now();
         this.applyPersonCount = 0;
+        this.view = 0;
         this.deleted = false;
     }
 
