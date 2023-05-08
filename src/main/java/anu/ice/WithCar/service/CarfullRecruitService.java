@@ -11,6 +11,7 @@ import anu.ice.WithCar.repository.CarfullRecruitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,10 +45,7 @@ public class CarfullRecruitService {
     }
 
     public void deleteCarfullRecruit(long no) {
-        RecruitCarfull recruitCarfull = carfullRecruitRepository
-                .findById(no)
-                .orElseThrow(CarfullRecruitNotFoundException::new);
-        if(recruitCarfull.isDeleted()) throw new CarfullRecruitDeletedException();
+        RecruitCarfull recruitCarfull = getRecruitCarfull(no);
         recruitCarfull.setDeleted(true);
         carfullRecruitRepository.save(recruitCarfull);
     }
@@ -58,18 +56,23 @@ public class CarfullRecruitService {
     }
 
     public RecruitCarfull viewCarfullRecruit(long no) {
-        RecruitCarfull recruitCarfull =  carfullRecruitRepository.findById(no).orElseThrow(CarfullRecruitNotFoundException::new);
-        if(recruitCarfull.isDeleted()) throw new CarfullRecruitDeletedException();
+        RecruitCarfull recruitCarfull = getRecruitCarfull(no);
 
         increaseViewCarFull(recruitCarfull);
         return recruitCarfull;
     }
 
-    public RecruitCarfull applyCarfullRecruit(long no, Member member) {
-        RecruitCarfull recruitCarfull =  carfullRecruitRepository.findById(no).orElseThrow(CarfullRecruitNotFoundException::new);
+    public List<RecruitCarfull> getMyCarfullRecruit(Member member) {
+        return carfullRecruitRepository.findAllByDeletedFalseAndWriteMember(member);
+    }
 
-        //신청하려는 카풀이 삭제되었는지 검증
-        if(recruitCarfull.isDeleted()) throw new CarfullRecruitDeletedException();
+    public List<RecruitCarfull> getMyAppliedCarfullRecruit(Member member, boolean showDeleted) {
+        return showDeleted ? applyCarfullRecruitRepository.findAllByApplicant(member).stream().map(ApplyRecruitCarfull::getRecruitCarfull).toList() :
+                applyCarfullRecruitRepository.findAllByApplicantAndCancelledFalse(member).stream().map(ApplyRecruitCarfull::getRecruitCarfull).toList();
+    }
+
+    public RecruitCarfull applyCarfullRecruit(long no, Member member) {
+        RecruitCarfull recruitCarfull = getRecruitCarfull(no);
 
         //신청하려는 카풀을 이미 신청했는지 검증
         if(isCarfullRecruitApplied(recruitCarfull, member)) throw new CarfullRecruitAlreadyAppliedException();
@@ -83,15 +86,12 @@ public class CarfullRecruitService {
 
     //카풀 신청한 것 취소
     public RecruitCarfull cancelApplyCarfullRecruit(long no, Member member) {
-        RecruitCarfull recruitCarfull = carfullRecruitRepository.findById(no).orElseThrow(CarfullRecruitNotFoundException::new);
-
-        //취소하려는 카풀이 삭제되었는지 검증
-        if(recruitCarfull.isDeleted()) throw new CarfullRecruitDeletedException();
+        RecruitCarfull recruitCarfull = getRecruitCarfull(no);
 
         //신청한 카풀이 맞는지 검증
         if(!isCarfullRecruitApplied(recruitCarfull, member)) throw new CarfullRecruitNotAppliedException();
 
-        ApplyRecruitCarfull applyRecruitCarfull = getCarfullRecruitApplied(recruitCarfull, member);
+        ApplyRecruitCarfull applyRecruitCarfull = getCarfullRecruitApply(recruitCarfull, member);
 
         applyRecruitCarfull.setCancelled(true);
         recruitCarfull.applyCountDown();
@@ -126,7 +126,7 @@ public class CarfullRecruitService {
     }
 
     public boolean checkCarfullRecruitOwner(Member member, long no) {
-        RecruitCarfull recruitCarfull = carfullRecruitRepository.findById(no).orElseThrow(CarfullRecruitNotFoundException::new);
+        RecruitCarfull recruitCarfull = getRecruitCarfull(no);
         return isCarfullRecruitOwner(recruitCarfull, member);
     }
 
@@ -135,7 +135,7 @@ public class CarfullRecruitService {
     }
 
     public boolean checkCarfullRecruitApplied(Member member, long no) {
-        RecruitCarfull recruitCarfull = carfullRecruitRepository.findById(no).orElseThrow(CarfullRecruitNotFoundException::new);
+        RecruitCarfull recruitCarfull = getRecruitCarfull(no);
 
         return isCarfullRecruitApplied(recruitCarfull, member);
 
@@ -143,21 +143,26 @@ public class CarfullRecruitService {
 
     public boolean isCarfullRecruitApplied(RecruitCarfull recruitCarfull, Member member) {
         applyCarfullRecruitRepository.findAllByRecruitCarfullAndApplicantAndCancelledFalse(recruitCarfull, member)
-                .orElseThrow(CarfullRecruitNotFoundException::new);
+                .orElseThrow(CarfullRecruitNotAppliedException::new);
 
         return true;
     }
 
-    public ApplyRecruitCarfull getCarfullRecruitApplied(RecruitCarfull recruitCarfull, Member member) {
+    public ApplyRecruitCarfull getCarfullRecruitApply(RecruitCarfull recruitCarfull, Member member) {
         return applyCarfullRecruitRepository.findAllByRecruitCarfullAndApplicantAndCancelledFalse(recruitCarfull, member)
                 .orElseThrow(CarfullRecruitNotFoundException::new);
     }
 
     public boolean isCarfullRecruitAccepted(Member member, long no) {
-        applyCarfullRecruitRepository.findAllByRecruitCarfullAndApplicantAndCancelledFalse(
-                carfullRecruitRepository.findById(no).orElseThrow(CarfullRecruitNotFoundException::new), member)
-                .orElseThrow(CarfullRecruitNotFoundException::new);
-        return true;
+        return applyCarfullRecruitRepository.findAllByRecruitCarfullAndApplicantAndCancelledFalse(
+                getRecruitCarfull(no), member)
+                .orElseThrow(CarfullRecruitApplyNotfoundException::new).isAccepted();
+    }
+
+    private RecruitCarfull getRecruitCarfull(long no) {
+        RecruitCarfull recruitCarfull =  carfullRecruitRepository.findById(no).orElseThrow(CarfullRecruitNotFoundException::new);
+        if(recruitCarfull.isDeleted()) throw new CarfullRecruitDeletedException();
+        return recruitCarfull;
     }
 
     private void increaseViewCarFull(RecruitCarfull recruitCarfull) {

@@ -2,6 +2,8 @@ package anu.ice.WithCar.controller;
 
 import anu.ice.WithCar.domain.entity.Member;
 import anu.ice.WithCar.domain.dto.UserDetailsEntity;
+import anu.ice.WithCar.domain.entity.RecruitCarfull;
+import anu.ice.WithCar.service.CarfullRecruitService;
 import anu.ice.WithCar.service.MemberService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +18,29 @@ import java.util.List;
 @RestController
 public class MemberController {
     private final MemberService memberService;
+    private final CarfullRecruitService carfullRecruitService;
 
     @Autowired
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, CarfullRecruitService carfullRecruitService) {
         this.memberService = memberService;
+        this.carfullRecruitService = carfullRecruitService;
     }
 
     @GetMapping("/myInfo")
     public String showMyInfo(@AuthenticationPrincipal UserDetailsEntity member) {
 
         return new JSONObject(member.getMember()).toString();
+    }
+
+    @GetMapping("/myInfo/recruit")
+    public List<RecruitCarfull> viewMyRecruitCarfullList(@AuthenticationPrincipal UserDetailsEntity member) {
+        return carfullRecruitService.getMyCarfullRecruit(member.getMember());
+    }
+
+    @GetMapping("/myInfo/apply")
+    public List<RecruitCarfull> viewMyAppliedCarfullList(@AuthenticationPrincipal UserDetailsEntity member,
+                                                         @RequestParam(name = "showDeleted", required = false) Boolean showDeleted) {
+        return carfullRecruitService.getMyAppliedCarfullRecruit(member.getMember(), showDeleted);
     }
 
     @PostMapping("/myInfo/change-pw")

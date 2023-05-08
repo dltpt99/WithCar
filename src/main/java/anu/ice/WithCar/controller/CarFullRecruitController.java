@@ -59,9 +59,9 @@ public class CarFullRecruitController {
         return carfullRecruitService.editCarfullRecruit(form);
     }
 
-    @PostMapping("/recruit/delete/{no}")
+    @PostMapping("/recruit/delete")
     public String deleteRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
-                                       @PathVariable("no") long no) {
+                                       @RequestParam("recruit_ID") long no) {
 
         if(member == null) throw new NotLoginException();
         carfullRecruitService.deleteCarfullRecruit(no);
@@ -70,9 +70,9 @@ public class CarFullRecruitController {
     }
 
     // ApplyCarfullRecruit에 대한 ID를 받음
-    @PostMapping("/recruit/accept/{no}")
+    @PostMapping("/recruit/accept")
     public String acceptRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
-                                       @PathVariable("no") long no) {
+                                       @RequestParam("recruit_ID") long no) {
         if(member == null) throw new NotLoginException();
 
         return String.valueOf(carfullRecruitService.acceptCarfullRecruitApply(member.getMember(), no));
