@@ -98,4 +98,14 @@ public class CarFullRecruitController {
         );
     }
 
+    @PostMapping("/recruit/isAccept")
+    public String checkCarfullRecruitAccepted(@AuthenticationPrincipal UserDetailsEntity member,
+                                             @RequestParam("recruit_ID") long no) {
+        if(member == null) throw new NotLoginException();
+
+        return String.valueOf(
+                carfullRecruitService.isCarfullRecruitAccepted(member.getMember(), no)
+        );
+    }
+
 }

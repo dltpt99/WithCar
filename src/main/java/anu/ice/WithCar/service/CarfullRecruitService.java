@@ -153,6 +153,13 @@ public class CarfullRecruitService {
                 .orElseThrow(CarfullRecruitNotFoundException::new);
     }
 
+    public boolean isCarfullRecruitAccepted(Member member, long no) {
+        applyCarfullRecruitRepository.findAllByRecruitCarfullAndApplicantAndCancelledFalse(
+                carfullRecruitRepository.findById(no).orElseThrow(CarfullRecruitNotFoundException::new), member)
+                .orElseThrow(CarfullRecruitNotFoundException::new);
+        return true;
+    }
+
     private void increaseViewCarFull(RecruitCarfull recruitCarfull) {
         recruitCarfull.setView(
                 recruitCarfull.getView() + 1
