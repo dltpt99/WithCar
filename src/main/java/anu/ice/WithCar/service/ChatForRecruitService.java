@@ -1,6 +1,8 @@
 package anu.ice.WithCar.service;
 
 import anu.ice.WithCar.domain.dto.ChatFromClient;
+import anu.ice.WithCar.domain.dto.ChatToClient;
+import anu.ice.WithCar.domain.dto.UserDetailsEntity;
 import anu.ice.WithCar.domain.entity.ChatMessageForRecruit;
 import anu.ice.WithCar.domain.entity.ChatRoomForRecruit;
 import anu.ice.WithCar.domain.entity.Member;
@@ -19,7 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class ChatServiceForRecruit {
+public class ChatForRecruitService {
     private final ChatRoomForRecruitRepository roomForRecruitRepository;
     private final ChatMessageForRecruitRepository messageForRecruitRepository;
     private final CarfullRecruitRepository recruitRepository;
@@ -28,7 +30,7 @@ public class ChatServiceForRecruit {
     private final SimpMessagingTemplate template;
 
     @Autowired
-    public ChatServiceForRecruit(ChatRoomForRecruitRepository roomForRecruitRepository, ChatMessageForRecruitRepository messageForRecruitRepository, CarfullRecruitRepository recruitRepository, JwtTokenProvider provider, SimpMessagingTemplate template) {
+    public ChatForRecruitService(ChatRoomForRecruitRepository roomForRecruitRepository, ChatMessageForRecruitRepository messageForRecruitRepository, CarfullRecruitRepository recruitRepository, JwtTokenProvider provider, SimpMessagingTemplate template) {
         this.roomForRecruitRepository = roomForRecruitRepository;
         this.messageForRecruitRepository = messageForRecruitRepository;
         this.recruitRepository = recruitRepository;
@@ -54,7 +56,7 @@ public class ChatServiceForRecruit {
         room.setUsers(users);
 
         //채팅방에 입장한 메시지 생성 및 전송
-        ChatMessageForRecruit message =  createMessage(recruitCarfull.getRecruitCarfullID(), member, ChatMessageForRecruit.MessageType.ENTER);
+        ChatMessageForRecruit message =  createMessage(recruitCarfull.getRecruitCarfullID(), member, "ENTER", ChatMessageForRecruit.MessageType.ENTER);
         sendMessageToSubcriber(room, message);
 
         roomForRecruitRepository.save(room);
@@ -69,41 +71,50 @@ public class ChatServiceForRecruit {
         room.setUsers(users);
 
         //채팅방에서 나간 메시지 생성
-        ChatMessageForRecruit message = createMessage(recruitCarfull.getRecruitCarfullID(), member, ChatMessageForRecruit.MessageType.LEAVE);
+        ChatMessageForRecruit message = createMessage(recruitCarfull.getRecruitCarfullID(), member, "LEAVE",ChatMessageForRecruit.MessageType.LEAVE);
         sendMessageToSubcriber(room, message);
 
         roomForRecruitRepository.save(room);
     }
 
     public void sendMessage(ChatFromClient client, long recruitPostID) {
-        Member member = (Member) provider.getAuthentication(client.getToken()).getPrincipal();
+        Member member = ((UserDetailsEntity) provider.getAuthentication(client.getToken()).getPrincipal()).getMember();
 
-        ChatMessageForRecruit message =  createMessage(recruitPostID, member, ChatMessageForRecruit.MessageType.TEXT);
+        ChatMessageForRecruit message =  createMessage(recruitPostID, member, client.getMessage(), ChatMessageForRecruit.MessageType.TEXT);
 
 //        ChatToClient chat = new ChatToClient(client.getMessage(), member.getNick());
         sendMessageToSubcriber(recruitPostID, message);
 //        return message;
     }
 
-    public List<ChatMessageForRecruit> getChatMessagesForRecruit(long recruitPostID) {
+    public void getChatMessagesForRecruit(long recruitPostID) {
         ChatRoomForRecruit room = getRoomById(recruitPostID);
-        return messageForRecruitRepository.findAllByRoom(room);
+
+        List<ChatMessageForRecruit> messages = messageForRecruitRepository.findAllByRoom(room);
+
+        for(ChatMessageForRecruit message : messages) {
+            sendMessageToSubcriber(recruitPostID, message);
+        }
     }
 
     private void sendMessageToSubcriber(ChatRoomForRecruit room, ChatMessageForRecruit message) {
-        template.convertAndSend("/topic/recruit/"+ room.getId(), message);
+        ChatToClient client = new ChatToClient(message.getMsgText(), message.getSender().getNick());
+        template.convertAndSend("/topic/recruit/"+ room.getId(),  client);
+
     }
 
     private void sendMessageToSubcriber(long roomID, ChatMessageForRecruit message) {
-        template.convertAndSend("/topic/recruit/"+ roomID, message);
+        ChatToClient client = new ChatToClient(message.getMsgText(), message.getSender().getNick());
+        template.convertAndSend("/topic/recruit/"+ roomID, client);
     }
 
-    private ChatMessageForRecruit createMessage(long recruitPostID, Member member, ChatMessageForRecruit.MessageType type) {
+    private ChatMessageForRecruit createMessage(long recruitPostID, Member member, String msg,  ChatMessageForRecruit.MessageType type) {
         ChatMessageForRecruit message = new ChatMessageForRecruit();
         message.setSender(member);
         message.setSendTime(LocalDateTime.now());
         message.setType(type);
         message.setRoom(getRoomById(recruitPostID));
+        message.setMsgText(msg);
 
         return messageForRecruitRepository.save(message);
     }
@@ -113,7 +124,7 @@ public class ChatServiceForRecruit {
         return roomForRecruitRepository.findByRecruitCarfull(recruitCarfull)
                 .orElseThrow(() -> {
                     createNewChatRoomForRecruit(recruitCarfull);
-                    throw new ChatRoomNotFoundExcpetion();
+                    return new ChatRoomNotFoundExcpetion();
                 });
 
     }
@@ -121,7 +132,7 @@ public class ChatServiceForRecruit {
     private ChatRoomForRecruit getRoomById(RecruitCarfull recruitCarfull) {
         return roomForRecruitRepository.findByRecruitCarfull(recruitCarfull).orElseThrow(() -> {
             createNewChatRoomForRecruit(recruitCarfull);
-            throw new ChatRoomNotFoundExcpetion();
+            return new ChatRoomNotFoundExcpetion();
         });
     }
 }
