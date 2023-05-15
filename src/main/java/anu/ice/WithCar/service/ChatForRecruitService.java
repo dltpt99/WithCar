@@ -98,13 +98,13 @@ public class ChatForRecruitService {
     }
 
     private void sendMessageToSubcriber(ChatRoomForRecruit room, ChatMessageForRecruit message) {
-        ChatToClient client = new ChatToClient(message.getMsgText(), message.getSender().getNick());
+        ChatToClient client = new ChatToClient(Long.toString(message.getId()),message.getMsgText(), message.getSender().getNick());
         template.convertAndSend("/topic/recruit/"+ room.getId(),  client);
 
     }
 
     private void sendMessageToSubcriber(long roomID, ChatMessageForRecruit message) {
-        ChatToClient client = new ChatToClient(message.getMsgText(), message.getSender().getNick());
+        ChatToClient client = new ChatToClient(Long.toString(message.getId()),message.getMsgText(), message.getSender().getNick());
         template.convertAndSend("/topic/recruit/"+ roomID, client);
     }
 
