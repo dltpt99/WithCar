@@ -34,18 +34,6 @@ public class CarFullRecruitController {
         return carfullRecruitService.writeCarfullRecruit(member.getMember(), form);
     }
 
-    @PostMapping("/recruit/apply/{no}")
-    public RecruitCarfull applyRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
-                                              @PathVariable("no") long no) {
-        return carfullRecruitService.applyCarfullRecruit(no, member.getMember());
-    }
-
-    @PostMapping("/recruit/apply/cancel/{no}")
-    public RecruitCarfull applyCancelRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
-                                                    @PathVariable("no") long no) {
-        return carfullRecruitService.cancelApplyCarfullRecruit(no, member.getMember());
-    }
-
     @GetMapping("/recruit/{no}")
     public RecruitCarfull viewRecruitCarfull(@PathVariable("no") long no) {
         return carfullRecruitService.viewCarfullRecruit(no);
@@ -57,6 +45,18 @@ public class CarFullRecruitController {
         if(member == null) throw new NotLoginException();
 
         return carfullRecruitService.editCarfullRecruit(form);
+    }
+
+    @PostMapping("/recruit/apply")
+    public String applyRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
+                                              @RequestParam("recruit_ID") long no) {
+        return String.valueOf(carfullRecruitService.applyCarfullRecruit(no, member.getMember()));
+    }
+
+    @PostMapping("/recruit/cancel")
+    public String applyCancelRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
+                                                    @RequestParam("recruit_ID") long no) {
+        return String.valueOf(carfullRecruitService.cancelApplyCarfullRecruit(no, member.getMember()));
     }
 
     @PostMapping("/recruit/delete")

@@ -3,6 +3,7 @@ package anu.ice.WithCar.controller;
 import anu.ice.WithCar.domain.entity.Member;
 import anu.ice.WithCar.domain.dto.UserDetailsEntity;
 import anu.ice.WithCar.domain.entity.RecruitCarfull;
+import anu.ice.WithCar.exception.NotLoginException;
 import anu.ice.WithCar.service.CarfullRecruitService;
 import anu.ice.WithCar.service.MemberService;
 import org.json.JSONObject;
@@ -34,18 +35,24 @@ public class MemberController {
 
     @GetMapping("/myInfo/recruit")
     public List<RecruitCarfull> viewMyRecruitCarfullList(@AuthenticationPrincipal UserDetailsEntity member) {
+        if(member == null) throw new NotLoginException();
+
         return carfullRecruitService.getMyCarfullRecruit(member.getMember());
     }
 
     @GetMapping("/myInfo/apply")
     public List<RecruitCarfull> viewMyAppliedCarfullList(@AuthenticationPrincipal UserDetailsEntity member,
-                                                         @RequestParam(name = "showDeleted", required = false) Boolean showDeleted) {
+                                                         @RequestParam(name = "showDeleted", required = false, defaultValue = "false") Boolean showDeleted) {
+        if(member == null) throw new NotLoginException();
+
         return carfullRecruitService.getMyAppliedCarfullRecruit(member.getMember(), showDeleted);
     }
 
     @PostMapping("/myInfo/change-pw")
     public Member changePasswordController(@AuthenticationPrincipal UserDetailsEntity member,
                                            @RequestParam("pw") String pw){
+        if(member == null) throw new NotLoginException();
+
         return memberService.changePassword(member.getMember(), pw);
     }
 

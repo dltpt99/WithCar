@@ -1,6 +1,12 @@
 package anu.ice.WithCar.controller;
 
 import anu.ice.WithCar.exception.*;
+import anu.ice.WithCar.exception.CarfullRecruit.*;
+import anu.ice.WithCar.exception.Chat.ChatMessageNotFoundException;
+import anu.ice.WithCar.exception.Chat.ChatRoomNotFoundExcpetion;
+import anu.ice.WithCar.exception.Member.MemberNotFoundException;
+import anu.ice.WithCar.exception.Member.NickDuplicateException;
+import anu.ice.WithCar.exception.Member.UserIdDuplicateException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -66,4 +72,10 @@ public class ExceptionController {
     @ExceptionHandler(value = CarfullRecruitApplyCancelledException.class)
     public String carfullRecruitApplyCancelledException() { return "carfullRecruitApplyCancelled"; }
 
+    //채팅방을 찾을 수 없음(새로 채팅방 생성)
+    @ExceptionHandler(value = ChatRoomNotFoundExcpetion.class)
+    public String chatRoomNotFoundException() { return "chatRoomNotFound"; }
+
+    @ExceptionHandler(value = ChatMessageNotFoundException.class)
+    public String chatMessageNotFoundException() { return "chatMessageNotFound"; }
 }

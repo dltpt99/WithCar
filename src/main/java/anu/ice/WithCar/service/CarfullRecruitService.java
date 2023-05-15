@@ -5,13 +5,12 @@ import anu.ice.WithCar.domain.dto.WriteRecruitCarfullForm;
 import anu.ice.WithCar.domain.entity.ApplyRecruitCarfull;
 import anu.ice.WithCar.domain.entity.Member;
 import anu.ice.WithCar.domain.entity.RecruitCarfull;
-import anu.ice.WithCar.exception.*;
+import anu.ice.WithCar.exception.CarfullRecruit.*;
 import anu.ice.WithCar.repository.ApplyCarfullRecruitRepository;
 import anu.ice.WithCar.repository.CarfullRecruitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,15 +18,20 @@ import java.util.Objects;
 public class CarfullRecruitService {
     private final CarfullRecruitRepository carfullRecruitRepository;
     private final ApplyCarfullRecruitRepository applyCarfullRecruitRepository;
+    private final ChatServiceForRecruit chatServiceForRecruit;
 
     @Autowired
-    public CarfullRecruitService(CarfullRecruitRepository carfullRecruitRepository, ApplyCarfullRecruitRepository applyCarfullRecruitRepository) {
+    public CarfullRecruitService(CarfullRecruitRepository carfullRecruitRepository, ApplyCarfullRecruitRepository applyCarfullRecruitRepository, ChatServiceForRecruit chatServiceForRecruit) {
         this.carfullRecruitRepository = carfullRecruitRepository;
         this.applyCarfullRecruitRepository = applyCarfullRecruitRepository;
+        this.chatServiceForRecruit = chatServiceForRecruit;
     }
 
     public RecruitCarfull writeCarfullRecruit(Member member, WriteRecruitCarfullForm form) {
         RecruitCarfull recruitCarfull = new RecruitCarfull(member, form);
+        // ChatRoom 개설
+        chatServiceForRecruit.createNewChatRoomForRecruit(recruitCarfull);
+
         return carfullRecruitRepository.save(recruitCarfull);
     }
 
@@ -71,7 +75,7 @@ public class CarfullRecruitService {
                 applyCarfullRecruitRepository.findAllByApplicantAndCancelledFalse(member).stream().map(ApplyRecruitCarfull::getRecruitCarfull).toList();
     }
 
-    public RecruitCarfull applyCarfullRecruit(long no, Member member) {
+    public boolean applyCarfullRecruit(long no, Member member) {
         RecruitCarfull recruitCarfull = getRecruitCarfull(no);
 
         //신청하려는 카풀을 이미 신청했는지 검증
@@ -79,13 +83,18 @@ public class CarfullRecruitService {
 
         ApplyRecruitCarfull apply = new ApplyRecruitCarfull(recruitCarfull, member);
 
+        recruitCarfull.applyCountUp();
+        //채팅방에 멤버 추가
+        chatServiceForRecruit.addNewMemberToChatRoom(recruitCarfull, member);
+
         carfullRecruitRepository.save(recruitCarfull);
         applyCarfullRecruitRepository.save(apply);
-        return recruitCarfull;
+
+        return true;
     }
 
     //카풀 신청한 것 취소
-    public RecruitCarfull cancelApplyCarfullRecruit(long no, Member member) {
+    public boolean cancelApplyCarfullRecruit(long no, Member member) {
         RecruitCarfull recruitCarfull = getRecruitCarfull(no);
 
         //신청한 카풀이 맞는지 검증
@@ -95,11 +104,13 @@ public class CarfullRecruitService {
 
         applyRecruitCarfull.setCancelled(true);
         recruitCarfull.applyCountDown();
+        //채팅방에서 멤버 제거
+        chatServiceForRecruit.removeMemberFromChatRoom(recruitCarfull, member);
 
         carfullRecruitRepository.save(recruitCarfull);
         applyCarfullRecruitRepository.save(applyRecruitCarfull);
 
-        return recruitCarfull;
+        return true;
     }
 
     //모집글을 작성한 작성자가 카풀 신청자를 수락하는 기능
@@ -142,10 +153,8 @@ public class CarfullRecruitService {
     }
 
     public boolean isCarfullRecruitApplied(RecruitCarfull recruitCarfull, Member member) {
-        applyCarfullRecruitRepository.findAllByRecruitCarfullAndApplicantAndCancelledFalse(recruitCarfull, member)
-                .orElseThrow(CarfullRecruitNotAppliedException::new);
-
-        return true;
+        return applyCarfullRecruitRepository.findAllByRecruitCarfullAndApplicantAndCancelledFalse(recruitCarfull, member)
+                .isPresent();
     }
 
     public ApplyRecruitCarfull getCarfullRecruitApply(RecruitCarfull recruitCarfull, Member member) {

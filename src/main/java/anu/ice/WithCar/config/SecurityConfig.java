@@ -34,6 +34,9 @@ public class SecurityConfig {
                 .httpBasic().disable()
                 // 쿠키 기반이 아닌 JWT 기반이므로 사용하지 않음
                 .csrf().disable()
+                // X-frame 옵션
+                .headers().frameOptions().sameOrigin()
+                .and()
                 // CORS 설정
                                .cors(c -> {
                                            CorsConfigurationSource source = request -> {
@@ -59,9 +62,10 @@ public class SecurityConfig {
                         // 회원가입과 로그인은 모두 승인
                         // /admin으로 시작하는 요청은 ADMIN 권한이 있는 유저에게만 허용
                         // /user 로 시작하는 요청은 USER 권한이 있는 유저에게만 허용
+                        .requestMatchers("/app/**", "/topic/**", "/gs-guide-websocket/**").permitAll()
                         .requestMatchers("/", "/signup/**", "/login-process", "/login", "/recruit/**").permitAll()
                         .requestMatchers("/recruit/new", "/recruit/edit", "/recruit/delete/**", "/recruit/apply/**",
-                                "/myInfo").hasAnyRole("USER", "ADMIN")
+                                "/myInfo/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().denyAll()
                 )

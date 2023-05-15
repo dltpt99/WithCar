@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity(name = "member")
 @Data
@@ -43,5 +44,16 @@ public class Member {
         role = "ROLE_USER";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Member member = (Member) o;
+        return getIdNumber().equals(member.getIdNumber()) && getUserId().equals(member.getUserId());
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getIdNumber(), getUserId());
+    }
 }

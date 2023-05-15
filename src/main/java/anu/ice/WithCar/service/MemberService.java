@@ -1,7 +1,7 @@
 package anu.ice.WithCar.service;
 
 import anu.ice.WithCar.domain.entity.Member;
-import anu.ice.WithCar.exception.MemberNotFoundException;
+import anu.ice.WithCar.exception.Member.MemberNotFoundException;
 import anu.ice.WithCar.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
