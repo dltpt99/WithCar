@@ -18,6 +18,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -87,24 +89,43 @@ public class ChatForRecruitService {
 //        return message;
     }
 
-    public void getChatMessagesForRecruit(long recruitPostID) {
+    public List<ChatToClient> getChatMessagesForRecruit(long recruitPostID) {
         ChatRoomForRecruit room = getRoomById(recruitPostID);
 
         List<ChatMessageForRecruit> messages = messageForRecruitRepository.findAllByRoom(room);
+        List<ChatToClient> client = new ArrayList<>();
 
         for(ChatMessageForRecruit message : messages) {
-            sendMessageToSubcriber(recruitPostID, message);
+            client.add(
+                    new ChatToClient(
+                            Long.toString(message.getId()),
+                            message.getMsgText(),
+                            message.getSender().getNick(),
+                            message.getSendTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    )
+            );
         }
+        return client;
     }
 
     private void sendMessageToSubcriber(ChatRoomForRecruit room, ChatMessageForRecruit message) {
-        ChatToClient client = new ChatToClient(Long.toString(message.getId()),message.getMsgText(), message.getSender().getNick());
+        ChatToClient client = new ChatToClient(
+                Long.toString(message.getId()),
+                message.getMsgText(),
+                message.getSender().getNick(),
+                message.getSendTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        );
         template.convertAndSend("/topic/recruit/"+ room.getId(),  client);
 
     }
 
     private void sendMessageToSubcriber(long roomID, ChatMessageForRecruit message) {
-        ChatToClient client = new ChatToClient(Long.toString(message.getId()),message.getMsgText(), message.getSender().getNick());
+        ChatToClient client = new ChatToClient(
+                Long.toString(message.getId()),
+                message.getMsgText(),
+                message.getSender().getNick(),
+                message.getSendTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        );
         template.convertAndSend("/topic/recruit/"+ roomID, client);
     }
 

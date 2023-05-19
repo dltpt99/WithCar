@@ -1,11 +1,17 @@
 package anu.ice.WithCar.controller;
 
 import anu.ice.WithCar.domain.dto.ChatFromClient;
+import anu.ice.WithCar.domain.dto.ChatToClient;
 import anu.ice.WithCar.service.ChatForRecruitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 @Controller
 public class ChatController {
@@ -27,9 +33,10 @@ public class ChatController {
 		chatForRecruitService.sendMessage(message, no);
 	}
 
-	@MessageMapping("/recruit/init/{recruitID}")
-	public void loadBeforeMessages(@DestinationVariable("recruitID") long no) {
-		chatForRecruitService.getChatMessagesForRecruit(no);
+	@PostMapping("/recruit/init/{recruitID}")
+	@ResponseBody
+	public List<ChatToClient> loadBeforeMessages(@PathVariable("recruitID") long no) {
+		return chatForRecruitService.getChatMessagesForRecruit(no);
 	}
 
 
