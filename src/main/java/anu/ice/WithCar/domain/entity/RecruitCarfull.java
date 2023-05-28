@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity(name = "recruitCarfull")
 @Data
@@ -26,6 +28,10 @@ public class RecruitCarfull{
     private String endPoint;
     private String comment;
     private int view;
+    private boolean needStartAgree;
+    private boolean started;
+    private boolean needArriveAgree;
+    private boolean arrived;
     private boolean deleted;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -46,7 +52,21 @@ public class RecruitCarfull{
         this.applyPersonCount = 0;
         this.view = 0;
         this.deleted = false;
+        this.started = false;
+        this.needStartAgree = false;
+        this.arrived = false;
+        this.needArriveAgree = false;
     }
+//
+//    public void startAgree(Member member) {
+//        RecruitCarfullStartAgreement agreement = new RecruitCarfullStartAgreement(member);
+//        startAgreement.put(member, agreement);
+//    }
+//
+//    public void arriveAgree(Member member) {
+//        RecruitCarfullArriveAgreement agreement = new RecruitCarfullArriveAgreement(member);
+//        arriveAgreement.put(member, agreement);
+//    }
 
     public void applyCountUp() {
         this.applyPersonCount++;
@@ -54,6 +74,10 @@ public class RecruitCarfull{
 
     public void applyCountDown() {
         this.applyPersonCount--;
+    }
+
+    public void increaseView() {
+        this.view++;
     }
 
 }

@@ -6,6 +6,7 @@ import anu.ice.WithCar.domain.dto.EditRecruitCarfullForm;
 import anu.ice.WithCar.domain.dto.WriteRecruitCarfullForm;
 import anu.ice.WithCar.exception.NotLoginException;
 import anu.ice.WithCar.service.CarfullRecruitService;
+import anu.ice.WithCar.domain.entity.ApplyRecruitCarfull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -59,14 +60,19 @@ public class CarFullRecruitController {
         return String.valueOf(carfullRecruitService.cancelApplyCarfullRecruit(no, member.getMember()));
     }
 
-    @PostMapping("/recruit/delete")
-    public String deleteRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
-                                       @RequestParam("recruit_ID") long no) {
+    // 카풀 모집글에 대해 거절되지 않은 리스트들을 보여줌
+    // 카풀 운전자가 이 리스트들을 보고 수락/거절을 해야 됨
+    @PostMapping("/recruit/applyList")
+    public List<ApplyRecruitCarfull> getAppliesForCarfull(@AuthenticationPrincipal UserDetailsEntity member,
+                                                          @RequestParam("recruit_ID") long no) {
+        return carfullRecruitService.getAppliesForRecruitCarfullWithoutDenied(member.getMember(), no);
+    }
 
-        if(member == null) throw new NotLoginException();
-        carfullRecruitService.deleteCarfullRecruit(no);
-
-        return "0";
+    // 카풀 모집글에 수락된, 그러니까 함께 출발 예정인 리스트를 보여줌
+    @PostMapping("/recruit/carfullMember")
+    public List<ApplyRecruitCarfull> getAccpetedAppliesForCarfull(@AuthenticationPrincipal UserDetailsEntity member,
+                                                                  @RequestParam("recruit_ID") long no) {
+        return carfullRecruitService.getAcceptedAppliesForRecruitCarfull(member.getMember(), no);
     }
 
     // ApplyCarfullRecruit에 대한 ID를 받음
@@ -78,13 +84,78 @@ public class CarFullRecruitController {
         return String.valueOf(carfullRecruitService.acceptCarfullRecruitApply(member.getMember(), no));
     }
 
+    // ApplyCarfullRecruit에 대한 ID를 받음
+    @PostMapping("/recruit/deny")
+    public String denyRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
+                                       @RequestParam("recruit_ID") long no) {
+        if(member == null) throw new NotLoginException();
+
+        return String.valueOf(carfullRecruitService.denyCarfullRecruitApply(member.getMember(), no));
+    }
+
+    // 카풀 모집글 ID와 킥당할 멤버 ID를 인자로 받음
+    @PostMapping("/recruit/kick")
+    public String kickMemberFromCarfull(@AuthenticationPrincipal UserDetailsEntity member,
+                                        @RequestParam("recruit_ID") long recruit_ID,
+                                        @RequestParam("member_ID") long member_id) {
+        if (member == null) throw new NotLoginException();
+
+        return String.valueOf(carfullRecruitService.kickMemberFromCarfull(member.getMember(), recruit_ID, member_id));
+    }
+
+    @PostMapping("/recruit/delete")
+    public String deleteRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
+                                       @RequestParam("recruit_ID") long no) {
+
+        if(member == null) throw new NotLoginException();
+        carfullRecruitService.deleteCarfullRecruit(no);
+
+        return "0";
+    }
+
+    @PostMapping("/recruit/start")
+    public String startRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
+                                       @RequestParam("recruit_ID") long no) {
+        if(member == null) throw new NotLoginException();
+        carfullRecruitService.startCarfullByWriter(member.getMember(), no);
+
+        return "0";
+    }
+
+    @PostMapping("/recruit/start/agree")
+    public String startAgreeRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
+                                           @RequestParam("recruit_ID") long no) {
+        if(member == null) throw new NotLoginException();
+        carfullRecruitService.startCarfullAgree(member.getMember(), no);
+
+        return "0";
+    }
+
+    @PostMapping("/recruit/arrive")
+    public String arriveRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
+                                      @RequestParam("recruit_ID") long no) {
+        if(member == null) throw new NotLoginException();
+        carfullRecruitService.arriveCarfullByWriter(member.getMember(), no);
+
+        return "0";
+    }
+
+    @PostMapping("/recruit/arrive/agree")
+    public String arriveAgreeRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
+                                            @RequestParam("recruit_ID") long no) {
+        if(member == null) throw new NotLoginException();
+        carfullRecruitService.arriveCarfullAgree(member.getMember(), no);
+
+        return "0";
+    }
+
     @PostMapping("/recruit/isowner")
     public String checkCarfullRecruitOwner(@AuthenticationPrincipal UserDetailsEntity member,
                                            @RequestParam("recruit_ID") long no) {
         if(member == null) throw new NotLoginException();
 
         return String.valueOf(
-                carfullRecruitService.checkCarfullRecruitOwner(member.getMember(), no)
+                carfullRecruitService.isCarfullRecruitOwner(member.getMember(), no)
         );
     }
 
@@ -94,7 +165,7 @@ public class CarFullRecruitController {
         if(member == null) throw new NotLoginException();
 
         return String.valueOf(
-                carfullRecruitService.checkCarfullRecruitApplied(member.getMember(), no)
+                carfullRecruitService.isCarfullRecruitApplied(member.getMember(), no)
         );
     }
 

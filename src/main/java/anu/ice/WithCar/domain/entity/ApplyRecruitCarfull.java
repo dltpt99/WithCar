@@ -22,6 +22,7 @@ public class ApplyRecruitCarfull {
     private Member applicant;
     private boolean cancelled;
     private boolean accepted;
+    private boolean denied;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime applyTime;
 
@@ -31,5 +32,6 @@ public class ApplyRecruitCarfull {
         applyTime = LocalDateTime.now();
         this.accepted = false;
         this.cancelled = false;
+        this.denied = false;
     }
 }

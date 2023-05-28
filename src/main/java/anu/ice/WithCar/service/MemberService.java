@@ -24,16 +24,15 @@ public class MemberService {
         return saveMemberInfo(member);
     }
 
-    private Member saveMemberInfo(Member member){
-        return memberRepository.save(member);
-    }
-
-    private Member getMember(long id) {
+    public Member getMember(long id) {
         return memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
-
     }
+
     public List<Member> getMemberList() {
         return memberRepository.findAll();
     }
 
+    private Member saveMemberInfo(Member member){
+        return memberRepository.save(member);
+    }
 }

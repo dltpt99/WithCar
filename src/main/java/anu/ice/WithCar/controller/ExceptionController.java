@@ -76,6 +76,15 @@ public class ExceptionController {
     @ExceptionHandler(value = ChatRoomNotFoundExcpetion.class)
     public String chatRoomNotFoundException() { return "chatRoomNotFound"; }
 
+    //채팅 메시지를 찾을 수 없음
     @ExceptionHandler(value = ChatMessageNotFoundException.class)
     public String chatMessageNotFoundException() { return "chatMessageNotFound"; }
+
+    // 카풀 탑승자가 출발 동의할 때, 아직 운전자가 출발 상태로 변환하지 않았을 때 발생
+    @ExceptionHandler(value = CarfullRecruitNotNeedStartAgreeException.class)
+    public String carfullRecruitNotNeedStartAgree() { return "carfullRecruitNotNeedStartAgree"; }
+
+    // 카풀 탑승자가 도착 동의할 때, 아직 운전자가 도착 상태로 변환하지 않았을 때 발생
+    @ExceptionHandler(value = CarfullRecruitNotNeedArriveAgreeException.class)
+    public String carfullRecruitNotNeedArriveAgree() { return "carfullRecruitNotNeedArriveAgree"; }
 }
