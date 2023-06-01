@@ -92,4 +92,12 @@ public class ExceptionController {
     // 카풀 탑승자가 도착 동의할 때, 아직 운전자가 도착 상태로 변환하지 않았을 때 발생
     @ExceptionHandler(value = CarfullRecruitNotNeedArriveAgreeException.class)
     public String carfullRecruitNotNeedArriveAgree() { return "carfullRecruitNotNeedArriveAgree"; }
+
+    // 이미 승낙된 신청을 다시 승낙하려고 할때 발생
+    @ExceptionHandler(value = CarfullRecruitAlreadyAccpetedException.class)
+    public String carfullRecruitAlreadyAccpeted() { return "carfullRecruitAlreadyAccpeted"; }
+
+    // 이미 거절된 신청을 승낙하려고 할때 발생
+    @ExceptionHandler(value = CarfullRecruitAlreadyDenidedException.class)
+    public String carfullRecruitAlreadyDenided() { return "carfullRecruitAlreadyDenided"; }
 }

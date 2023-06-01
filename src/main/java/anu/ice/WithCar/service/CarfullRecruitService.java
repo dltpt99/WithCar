@@ -119,6 +119,12 @@ public class CarfullRecruitService {
         //취소한 신청인지 검증
         if (applyRecruitCarfull.isCancelled()) throw new CarfullRecruitApplyCancelledException();
 
+        // 이미 승낙된 신청인지 검증
+        if (applyRecruitCarfull.isAccepted()) throw new CarfullRecruitAlreadyAccpetedException();
+
+        // 이미 거절된 신청인지 검증
+        if (applyRecruitCarfull.isDenied()) throw new CarfullRecruitAlreadyDenidedException();
+
         // 수락 상태로 변경 및 applyCount 증가 (탑승자로 인식)
         applyRecruitCarfull.setAccepted(true);
         applyCarfullRecruitRepository.save(applyRecruitCarfull);
@@ -144,6 +150,12 @@ public class CarfullRecruitService {
 
         //취소한 신청인지 검증
         if (applyRecruitCarfull.isCancelled()) throw new CarfullRecruitApplyCancelledException();
+
+        // 이미 승낙된 신청인지 검증
+        if (applyRecruitCarfull.isAccepted()) throw new CarfullRecruitAlreadyAccpetedException();
+
+        // 이미 거절된 신청인지 검증
+        if (applyRecruitCarfull.isDenied()) throw new CarfullRecruitAlreadyDenidedException();
 
         // 거절 상태로 변경
         applyRecruitCarfull.setDenied(true);
@@ -220,7 +232,7 @@ public class CarfullRecruitService {
 
     // 카풀의 모든 탑승자들이 동의했는지 확인
     private boolean isStartAllAgreed(RecruitCarfull recruitCarfull) {
-        List<ApplyRecruitCarfull> applies = applyCarfullRecruitRepository.findAllByRecruitCarfullAndCancelledFalse(recruitCarfull);
+        List<ApplyRecruitCarfull> applies = applyCarfullRecruitRepository.findAllByRecruitCarfullAndAcceptedTrue(recruitCarfull);
 
         // 신청서들과 동의서들을 비교해서 모두 일치하면 출발
         // 모두 일치하지 않아도 누가 동의하지 않았는지는 알 수 있도록 별개의 함수 짜야함
@@ -273,7 +285,7 @@ public class CarfullRecruitService {
 
     private boolean isArriveAllAgreed(RecruitCarfull recruitCarfull) {
         // 카풀의 모든 탑승자들이 동의했는지 확인
-        List<ApplyRecruitCarfull> applies = applyCarfullRecruitRepository.findAllByRecruitCarfullAndCancelledFalse(recruitCarfull);
+        List<ApplyRecruitCarfull> applies = applyCarfullRecruitRepository.findAllByRecruitCarfullAndAcceptedTrue(recruitCarfull);
 
         // 신청서들과 동의서들을 비교해서 모두 일치하면 도착
         // 모두 일치하지 않아도 누가 동의하지 않았는지는 알 수 있도록 별개의 함수 짜야함
@@ -294,7 +306,7 @@ public class CarfullRecruitService {
         //작성자가 맞는지 검증
         if (!isCarfullRecruitOwner(recruitCarfull, member)) throw new NotCarfullRecruitWriterException();
 
-        return applyCarfullRecruitRepository.findAllByRecruitCarfullAndCancelledFalse(recruitCarfull);
+        return applyCarfullRecruitRepository.findAllByRecruitCarfullAndDeniedFalseAndCancelledFalse(recruitCarfull);
     }
 
     // 카풀 모집글에 수락된, 그러니까 함께 출발 예정인 리스트를 보여줌

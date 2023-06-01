@@ -21,15 +21,13 @@ public class ChatRoomForRecruit {
 //    @ElementCollection
 //    @CollectionTable(name = "chatRoomForRecruitUsers")
     @OneToMany
-    private List<Member> users;
+    private List<Member> users = new ArrayList<>();
     private enum state {
         ENABLE, DISABLE
     }
 
     public ChatRoomForRecruit(RecruitCarfull recruit) {
         recruitCarfull = recruit;
-
-        this.users = new ArrayList<>();
         users.add(recruit.getWriteMember());
     }
 }
