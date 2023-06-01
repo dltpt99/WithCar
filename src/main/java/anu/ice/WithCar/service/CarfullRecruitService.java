@@ -125,6 +125,9 @@ public class CarfullRecruitService {
         // 이미 거절된 신청인지 검증
         if (applyRecruitCarfull.isDenied()) throw new CarfullRecruitAlreadyDenidedException();
 
+        // 카풀 인원 수 제한 검증
+        if(recruitCarfull.getApplyPersonCount() >= recruitCarfull.getPersonLimit()) throw new CarfullRecruitApplyLimitedOverException();
+
         // 수락 상태로 변경 및 applyCount 증가 (탑승자로 인식)
         applyRecruitCarfull.setAccepted(true);
         applyCarfullRecruitRepository.save(applyRecruitCarfull);
@@ -306,7 +309,7 @@ public class CarfullRecruitService {
         //작성자가 맞는지 검증
         if (!isCarfullRecruitOwner(recruitCarfull, member)) throw new NotCarfullRecruitWriterException();
 
-        return applyCarfullRecruitRepository.findAllByRecruitCarfullAndDeniedFalseAndCancelledFalse(recruitCarfull);
+        return applyCarfullRecruitRepository.findAllByRecruitCarfullAndDeniedFalseAndCancelledFalseAndAcceptedFalse(recruitCarfull);
     }
 
     // 카풀 모집글에 수락된, 그러니까 함께 출발 예정인 리스트를 보여줌
