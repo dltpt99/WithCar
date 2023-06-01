@@ -6,6 +6,7 @@ import anu.ice.WithCar.exception.Chat.ChatMessageNotFoundException;
 import anu.ice.WithCar.exception.Chat.ChatRoomNotFoundExcpetion;
 import anu.ice.WithCar.exception.Member.MemberNotFoundException;
 import anu.ice.WithCar.exception.Member.NickDuplicateException;
+import anu.ice.WithCar.exception.Member.SignFormIncludeNullException;
 import anu.ice.WithCar.exception.Member.UserIdDuplicateException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,6 +26,10 @@ public class ExceptionController {
     public String userIdDuplicateError() {
         return "userIdDuplicateError";
     }
+
+    // 회원가입 시 어떤 항목이라도 NULL 일때
+    @ExceptionHandler(value = SignFormIncludeNullException.class)
+    public String signFormIncludeNull() { return "signFormIncludeNull"; }
 
     //멤버 검색결과 찾지 못함
     @ExceptionHandler(value = MemberNotFoundException.class)
