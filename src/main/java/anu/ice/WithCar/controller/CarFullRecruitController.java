@@ -51,6 +51,8 @@ public class CarFullRecruitController {
     @PostMapping("/recruit/apply")
     public String applyRecruitCarfull(@AuthenticationPrincipal UserDetailsEntity member,
                                               @RequestParam("recruit_ID") long no) {
+        if(member == null) throw new NotLoginException();
+
         return String.valueOf(carfullRecruitService.applyCarfullRecruit(no, member.getMember()));
     }
 
@@ -65,6 +67,8 @@ public class CarFullRecruitController {
     @PostMapping("/recruit/applyList")
     public List<ApplyRecruitCarfull> getAppliesForCarfull(@AuthenticationPrincipal UserDetailsEntity member,
                                                           @RequestParam("recruit_ID") long no) {
+        if(member == null) throw new NotLoginException();
+
         return carfullRecruitService.getAppliesForRecruitCarfullWithoutDenied(member.getMember(), no);
     }
 
@@ -72,6 +76,8 @@ public class CarFullRecruitController {
     @PostMapping("/recruit/carfullMember")
     public List<ApplyRecruitCarfull> getAccpetedAppliesForCarfull(@AuthenticationPrincipal UserDetailsEntity member,
                                                                   @RequestParam("recruit_ID") long no) {
+        if(member == null) throw new NotLoginException();
+
         return carfullRecruitService.getAcceptedAppliesForRecruitCarfull(member.getMember(), no);
     }
 
