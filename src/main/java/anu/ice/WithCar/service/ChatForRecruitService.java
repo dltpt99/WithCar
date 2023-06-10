@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ChatForRecruitService {
@@ -47,9 +48,12 @@ public class ChatForRecruitService {
         room.setId(recruitCarfull.getRecruitCarfullID());
 
         roomForRecruitRepository.save(room);
+
+        // 글 작성자도 채팅방에 멤버로 초대되어야 한다
+        addNewMemberToChatRoom(recruitCarfull, recruitCarfull.getWriteMember(), room);
     }
 
-    //apply 할때 수행됨
+    //apply accept 할때 수행됨
     public void addNewMemberToChatRoom(RecruitCarfull recruitCarfull, Member member) {
         ChatRoomForRecruit room = getRoomById(recruitCarfull);
         List<Member> users = room.getUsers();
@@ -64,7 +68,7 @@ public class ChatForRecruitService {
         roomForRecruitRepository.save(room);
     }
 
-    //cancel 할때 수행됨
+    //kick 되었을때 수행됨
     public void removeMemberFromChatRoom(RecruitCarfull recruitCarfull, Member member) {
         ChatRoomForRecruit room = getRoomById(recruitCarfull);
         List<Member> users = room.getUsers();
@@ -142,18 +146,38 @@ public class ChatForRecruitService {
 
     private ChatRoomForRecruit getRoomById(long recruitPostID) {
         RecruitCarfull recruitCarfull = recruitRepository.findById(recruitPostID).orElseThrow(CarfullRecruitNotFoundException::new);
-        return roomForRecruitRepository.findByRecruitCarfull(recruitCarfull)
-                .orElseThrow(() -> {
-                    createNewChatRoomForRecruit(recruitCarfull);
-                    return new ChatRoomNotFoundExcpetion();
-                });
+        Optional<ChatRoomForRecruit> chatRoomForRecruit = roomForRecruitRepository.findByRecruitCarfull(recruitCarfull);
+
+        if(chatRoomForRecruit.isPresent()) {
+            return chatRoomForRecruit.get();
+        }
+
+        createNewChatRoomForRecruit(recruitCarfull);
+        return roomForRecruitRepository.findByRecruitCarfull(recruitCarfull).orElseThrow(ChatRoomNotFoundExcpetion::new);
 
     }
 
     private ChatRoomForRecruit getRoomById(RecruitCarfull recruitCarfull) {
-        return roomForRecruitRepository.findByRecruitCarfull(recruitCarfull).orElseThrow(() -> {
-            createNewChatRoomForRecruit(recruitCarfull);
-            return new ChatRoomNotFoundExcpetion();
-        });
+        Optional<ChatRoomForRecruit> chatRoomForRecruit = roomForRecruitRepository.findByRecruitCarfull(recruitCarfull);
+
+        if(chatRoomForRecruit.isPresent()) {
+            return chatRoomForRecruit.get();
+        }
+
+        createNewChatRoomForRecruit(recruitCarfull);
+        return roomForRecruitRepository.findByRecruitCarfull(recruitCarfull).orElseThrow(ChatRoomNotFoundExcpetion::new);
+    }
+
+    private void addNewMemberToChatRoom(RecruitCarfull recruitCarfull, Member member, ChatRoomForRecruit room) {
+        List<Member> users = room.getUsers();
+
+        users.add(member);
+        room.setUsers(users);
+
+        //채팅방에 입장한 메시지 생성 및 전송
+        ChatMessageForRecruit message =  createMessage(recruitCarfull.getRecruitCarfullID(), member, "ENTER", ChatMessageForRecruit.MessageType.ENTER);
+        sendMessageToSubcriber(room, message);
+
+        roomForRecruitRepository.save(room);
     }
 }

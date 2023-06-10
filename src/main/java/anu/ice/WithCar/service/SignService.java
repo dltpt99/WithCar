@@ -42,6 +42,9 @@ public class SignService implements UserDetailsService {
         form.setPw(
                 new BCryptPasswordEncoder().encode(form.getPw()
                 ));
+        //각 항목 공백 검사
+        if(form.getId() == null)
+
         //중복 id, nick 검사
         check_duplicate_user_id(form.getId());
         check_duplicate_nick(form.getNick());

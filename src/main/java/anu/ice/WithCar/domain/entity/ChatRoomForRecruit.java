@@ -19,17 +19,17 @@ public class ChatRoomForRecruit {
     private RecruitCarfull recruitCarfull;
 
 //    @ElementCollection
-//    @CollectionTable(name = "chatRoomForRecruitUsers")
+//    @CollectionTable(name = "chatrromforrecruit_users", joinColumns = )
+//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @OneToMany
-    private List<Member> users;
+    @JoinColumn(name = "id")
+    private List<Member> users = new ArrayList<>();
     private enum state {
         ENABLE, DISABLE
     }
 
     public ChatRoomForRecruit(RecruitCarfull recruit) {
         recruitCarfull = recruit;
-
-        this.users = new ArrayList<>();
         users.add(recruit.getWriteMember());
     }
 }

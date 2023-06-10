@@ -6,6 +6,7 @@ import anu.ice.WithCar.exception.Chat.ChatMessageNotFoundException;
 import anu.ice.WithCar.exception.Chat.ChatRoomNotFoundExcpetion;
 import anu.ice.WithCar.exception.Member.MemberNotFoundException;
 import anu.ice.WithCar.exception.Member.NickDuplicateException;
+import anu.ice.WithCar.exception.Member.SignFormIncludeNullException;
 import anu.ice.WithCar.exception.Member.UserIdDuplicateException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,6 +26,10 @@ public class ExceptionController {
     public String userIdDuplicateError() {
         return "userIdDuplicateError";
     }
+
+    // 회원가입 시 어떤 항목이라도 NULL 일때
+    @ExceptionHandler(value = SignFormIncludeNullException.class)
+    public String signFormIncludeNull() { return "signFormIncludeNull"; }
 
     //멤버 검색결과 찾지 못함
     @ExceptionHandler(value = MemberNotFoundException.class)
@@ -87,4 +92,12 @@ public class ExceptionController {
     // 카풀 탑승자가 도착 동의할 때, 아직 운전자가 도착 상태로 변환하지 않았을 때 발생
     @ExceptionHandler(value = CarfullRecruitNotNeedArriveAgreeException.class)
     public String carfullRecruitNotNeedArriveAgree() { return "carfullRecruitNotNeedArriveAgree"; }
+
+    // 이미 승낙된 신청을 다시 승낙하려고 할때 발생
+    @ExceptionHandler(value = CarfullRecruitAlreadyAccpetedException.class)
+    public String carfullRecruitAlreadyAccpeted() { return "carfullRecruitAlreadyAccpeted"; }
+
+    // 이미 거절된 신청을 승낙하려고 할때 발생
+    @ExceptionHandler(value = CarfullRecruitAlreadyDenidedException.class)
+    public String carfullRecruitAlreadyDenided() { return "carfullRecruitAlreadyDenided"; }
 }
