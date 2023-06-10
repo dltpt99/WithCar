@@ -19,8 +19,10 @@ public class ChatRoomForRecruit {
     private RecruitCarfull recruitCarfull;
 
 //    @ElementCollection
-//    @CollectionTable(name = "chatRoomForRecruitUsers")
+//    @CollectionTable(name = "chatrromforrecruit_users", joinColumns = )
+//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @OneToMany
+    @JoinColumn(name = "id")
     private List<Member> users = new ArrayList<>();
     private enum state {
         ENABLE, DISABLE
